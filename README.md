@@ -1,7 +1,7 @@
 # Autonomous-Car
 Create an autonomous car based on Arduino and the subsumption architecture
 
-## Intent
+## Interface
 1. Move the sticker rightside left and right to control the direction of the car, and forward and backward to control the left and right turning of the ultrasonic module.  
 2. Move the sticker leftside forward and backward to control the speed of the car going forward and backward.
 3. Spin the R1 potentiometer to control the startup speed of the DC motor. 
