@@ -1,3 +1,5 @@
+
+
 /***********************************************************
 File name:  AdeeptMotor.ino
 Description:  
@@ -35,85 +37,75 @@ Things to Try
   Change buttons to one ping only, boolaean
   
 ***********************************************************/
+
 #include <SPI.h>
 #include "RF24.h"
 #include <Servo.h>
+#include <Horn.h>
+#include <Lights.h>
 
-/*
+
+const int RPin = A3; 
+const int GPin = A4; 
+const int BPin = A5; 
+bool lightSwitch = false;
+Lights lights;
+
+
 RF24 radio(9, 10);                // define the object to control NRF24L01
 byte addresses[5] = "00007";      // define communication address which should correspond to remote control
 int data[9]={512, 512, 0, 0, 1, 1, 512, 512, 512};  // define array used to save the communication data
-*/
 
-/*
 Servo dirServo;                  // define servo to control turning of smart car
 int dirServoPin = 2;              // define pin for signal line of the last servo
+int steering = 90;
 
-Servo ultrasonicServo;           // define servo to control turning of ultrasonic sensor
-int ultrasonicPin = 3;            // define pin for signal line of the last servo
-*/
-
-
-// #define FORWARD HIGH
-// #define BACKWARD LOW
-
-/*
 const int dirAPin = 7;    // define pin used to control rotational direction of motor A
 const int pwmAPin = 6;    // define pin for PWM used to control rotational speed of motor A
 const int dirBPin = 4;    // define pin used to control rotational direction of motor B
 const int pwmBPin = 5;    // define pin for PWM used to control rotational speed of motor B
 const int snsAPin = 0;    // define pin for detecting current of motor A
 const int snsBPin = 1;    // define pin for detecting current of motor B
-*/
+int carSpeed = 0;
+int motorOffset = 0;
 
-/*
 const int buzzerPin = 8;  // define pin for buzzer
-const int RPin = A3; 
-const int GPin = A4; 
-const int BPin = A5; 
-int RGBVal = 0;
+Horn horn(buzzerPin);  //pinMode(buzzerPin, OUTPUT); // set buzzerPin to output mode
 
 bool isAutonomous = false;
-bool buzzer = false;
-bool ledSwitch = false;
-int steering = 90;
-int looking = 90;
-int carSpeed = 0;
-int servoOffset = 0;
-int motorOffset = 0;
-*/
 
-//int servoOffset = 0;
-//int maxAngle = 135;
-//int minAngle = 45;
-/*
+bool buzzer = false;
+
+Servo ultrasonicServo;           // define servo to control turning of ultrasonic sensor
+int ultrasonicPin = 3;            // define pin for signal line of the last servo
+int looking = 90;
+int servoOffset = 0;
+int maxAngle = 135;
+int minAngle = 45;
 float barDegree = 90;
 float barDistance = 0;
-*/
 int trigPin = 11;                  // define Trig pin for ultrasonic ranging module
 int echoPin = 12;                  // define Echo pin for ultrasonic ranging module
 float maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
 
-
-/*
 #define FORWARD LOW
 #define BACKWARD HIGH
-*/
+
 
 //-------------------------------------------------------------------------
 // SETUP function
 //-------------------------------------------------------------------------
 
 void setup() {
-/*   
+ 
  radio.begin();                      // initialize RF24
    radio.setRetries(0, 15);            // set retries times
    radio.setPALevel(RF24_PA_LOW);      // set power
    radio.openReadingPipe(1, addresses);// open delivery channel
    radio.startListening();             // start monitoring
-*/
+
    Serial.begin(9600); // initialize serial port
- /* 
+  
    dirServo.attach(dirServoPin);  // attaches the servo on servoDirPin to the servo object
    ultrasonicServo.attach(ultrasonicPin);  // attaches the servo on ultrasonicPin to the servo object
 
@@ -121,16 +113,17 @@ void setup() {
    pinMode(pwmAPin, OUTPUT);   // set pwmAPin to output mode
    pinMode(dirBPin, OUTPUT);   // set dirBPin to output mode
    pinMode(pwmBPin, OUTPUT);   // set pwmBPin to output mode
-*/
-/*  
-   pinMode(buzzerPin, OUTPUT); // set buzzerPin to output mode
 
+   
    pinMode(RPin, OUTPUT);   // set RPin to output mode
    pinMode(GPin, OUTPUT);   // set GPin to output mode
    pinMode(BPin, OUTPUT);   // set BPin to output mode
-*/
+
    pinMode(trigPin, OUTPUT); // set trigPin to output mode
    pinMode(echoPin, INPUT);  // set echoPin to input mode
+
+   lights.setPins(RPin, GPin, BPin, RPin, GPin, BPin);
+   lights.mainLights();
 }
 
 
@@ -139,44 +132,37 @@ void setup() {
 //-------------------------------------------------------------------------
 
 void loop() {
-   //receiveData();
-      
-  // if (buzzer) {tone(buzzerPin, 2000);} else {noTone(buzzerPin);}
-   // if (ledSwitch) {leds();}
+   receiveData();
+   
+  if (buzzer) {horn.beep(2000);}
+   if (buzzer) {tone(buzzerPin, 2000);} else {noTone(buzzerPin);}
+   if (lightSwitch) {lights.nextColour();}
 
-   //if (!isAutonomous) { 
-      // Serial.print("      Intent - Steering:  ");
-      // Serial.print(steering);
-      // Serial.print("      Loop() - Speed: ");
-      // Serial.print(carSpeed);
-      //ctrlCar (steering, carSpeed);
-      //pointUltrasonic(looking);
-      getDistance();
-      Serial.print("    Manual:  ");
-  // } 
-/*
+   if (!isAutonomous) { 
+       ctrlCar (steering, carSpeed);
+       pointUltrasonic(looking);
+       getDistance();
+   } 
+
    if (isAutonomous) {
-     /* makeMap();
-
+   /*
+      makeMap();
       int spd = 128;  // set the speed(0-255) of smart car
-
       int ang = 0;
       if (barDegree < 90) {ang = maxAngle;} else {ang = minAngle;}  
- 
       if (barDistance < 20) {ctrlCar(ang, -spd);}
       else if (barDistance < 50) {ctrlCar(ang, spd);}
       else {ctrlCar(90, spd);}
-         
       for(int i=0;i<15;i++) {
          delay(100);              // moving time time
-         receiveData();
+      //   receiveData();
       }
       
       ctrlCar(90, 0);   // make the smart car stop for preparation of next scanning
 
-      
+       */
    } //if !isAutonomous
-     */ 
+   
    // send motor current to serial port  
    //  float iMotorA = analogRead(snsAPin) * 5.0 / 1024 / 30 / 0.05;
    //  float iMotorB = analogRead(snsBPin) * 5.0 / 1024 / 30 / 0.05;
@@ -189,7 +175,7 @@ void loop() {
 // other functions
 //-------------------------------------------------------------------------
 
-/*
+
 void receiveData() {
    if (radio.available()) {             // if receive the data
       while (radio.available()) {         // read all the data
@@ -204,7 +190,7 @@ void receiveData() {
       //Serial.print("  centred:  ");
       //Serial.print(carSpeed);
      
-      if (data[2]==1) {ledSwitch = true;} else {ledSwitch = false;}
+      if (data[2]==1) {lightSwitch = true;} else {lightSwitch = false;}
       // ledSwitch = data[2]; 
       if (data[3]==1) {isAutonomous = false;Serial.print("Switch to MANUAL mode ");}    
       if (data[4]==1) {isAutonomous = true;Serial.print("Switch to AUTONOMOUS mode ");}    
@@ -216,10 +202,10 @@ void receiveData() {
    }
 }
 
-*/
 
 
-/*
+
+
 // make any movement parameter changes due to the hardware deviation
 void ctrlCar(float _steeringAngle, float _motorSpd) {
 
@@ -244,7 +230,7 @@ void ctrlCar(float _steeringAngle, float _motorSpd) {
    analogWrite(pwmBPin, abs(_motorSpd));
 
 }
-*/
+
 
 
 //-------------------------------------------------------------------------
@@ -254,11 +240,11 @@ void ctrlCar(float _steeringAngle, float _motorSpd) {
 void pointUltrasonic (float _ultrasonicServoDegree) {
    // Aim the rangefinder, hiding the details of how to get it to point exactly that direction
 
-//   _ultrasonicServoDegree = constrain(_ultrasonicServoDegree + servoOffset, minAngle, maxAngle);
-//   ultrasonicServo.write(_ultrasonicServoDegree);
+   _ultrasonicServoDegree = constrain(_ultrasonicServoDegree + servoOffset, minAngle, maxAngle);
+    ultrasonicServo.write(_ultrasonicServoDegree);
    
- //  Serial.print(" pointUltra() - looking: ");
-//   Serial.print(_ultrasonicServoDegree);
+    Serial.print(" pointUltra() - looking: ");
+    Serial.print(_ultrasonicServoDegree);
 }
 
 
@@ -308,7 +294,7 @@ float getDistance() {
 }
 
 
-/*
+
 
 void makeMap() {
    barDistance = maxDistance; // save the minimum measured distance from obstacles
@@ -343,8 +329,8 @@ void makeMap() {
    delay(200);
 }
 
-*/
-     /* 
+
+/*      
 void leds() {
       RGBVal++ ;
       RGBVal=RGBVal%5;
@@ -364,3 +350,4 @@ void leds() {
       digitalWrite(BPin, b);
   }
   */
+  
