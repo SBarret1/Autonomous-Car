@@ -17,11 +17,11 @@ Author: Tom
 Date: 2016/12/26 
 
 Also to try
-  shorten data array, or even try sending it wothout the array itself
-  don't send all the data every time
-  investigate radio librabry - can I tell if teh communication is complete?
-  is HIGH/LOW directly invertible
-  What data should I send from teh dar (to express in the three LEDs)
+    shorten data array, or even try sending it wothout the array itself
+    don't send all the data every time
+    investigate radio librabry - can I tell if teh communication is complete?
+    is HIGH/LOW directly invertible
+    What data should I send from teh dar (to express in the three LEDs)
   
 ***********************************************************/
 #include <SPI.h>
