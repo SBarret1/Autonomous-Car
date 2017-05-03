@@ -6,42 +6,43 @@
 #define Servo_h
 
 #include "Arduino.h"
-#include <Servo.h>
+//#include <Servo.h>
+#include "ServoMotor.h"
 
-class ServoMotor
+ServoMotor::ServoMotor(){
+}
+
+ServoMotor::setPins(int servoPin)
 {
-  public:
-    ServoMotor(int servoPin);
-    void point(int angle = 90);     // in degrees
-    void calibrate(int offset = 0); // in degrees
-
-  private:
-    Servo _servo;
-    int _servoPin;
-    int _angle;          // in degrees
-    int _offset;         // in degrees
-    int _maxAngle = 135; // in degrees
-    int _minAngle = 45;  // in degrees
-};
-
-
-ServoMotor::ServoMotor(int servoPin)
-{
-    _servoPin = servoPin
+    _servoPin = servoPin;
     _servo.attach(servoPin);  // attaches the servo on servoDirPin to the servo object
 }
 
 
 ServoMotor::point(int angle)
 {
-    _angle = constrain(_angle + _offset, _minAngle, _maxAngle);
+    _angle = constrain(angle + _offset, _minAngle, _maxAngle);
     _servo.write(_angle);
 }
 
 
 ServoMotor::calibrate(int offset)
 {
-     _offset = offset
+    _offset = map(offset, 0, 1023, -_offsetAccuracy, _offsetAccuracy);
+}
+
+
+ServoMotor::angle(int reading)
+{
+    int angle = map(reading, 0, 1023, _minAngle, _maxAngle); // steering is between min and max angle
+    return angle;
+}
+
+
+
+ServoMotor::pointing()
+{
+    return _angle;
 }
 
 

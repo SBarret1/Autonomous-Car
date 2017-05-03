@@ -48,43 +48,6 @@ void Lights::mainLightsOff()
     _ledFR.off();
 }
 
-
-
-void Lights::indicateLeft(int duration)
-{
-    _isLeft = true;
-    _isRight = false;
-
-    //_isOn = true;
-    _ledFL.setColour(LOW, HIGH, HIGH); // yellow light
-    _ledFR.setColour(HIGH, HIGH, HIGH); // yellow light
-    _ledFL.on(duration);
-    _ledFR.on(duration);
-}
-
-
-void Lights::indicateRight(int duration)
-{
-    _isRight = true;
-    _isLeft = false;
-    _ledFL.setColour(HIGH, HIGH, HIGH); // yellow light
-    _ledFR.setColour(LOW, HIGH, HIGH); // yellow light
-    _ledFL.on(duration);
-    _ledFR.on(duration);
-}
-
-
-void Lights::cancelIndicating()
-{
-    _isRight = false;
-    _isLeft = false;
-    _ledFL.setColour(HIGH, HIGH, HIGH); // yellow light
-    _ledFR.setColour(HIGH, HIGH, HIGH); // yellow light
-    _ledFL.off();
-    _ledFR.off();
-}
-
-
 void Lights::off()
 {
     _isLeft = false;
@@ -125,10 +88,40 @@ void Lights::debug()
 }
 
 
-/*
-Lights(int pinFL, int pinFR);
-void mainLights();
-void indicateLeft(int duration);
-void indicateRight(int duration);
-void Off();
-*/
+/* Code to save for Bartholemew and later
+ 
+ void Lights::indicateLeft(int duration)
+ {
+ _isLeft = true;
+ _isRight = false;
+ 
+ //_isOn = true;
+ _ledFL.setColour(LOW, HIGH, HIGH); // yellow light
+ _ledFR.setColour(HIGH, HIGH, HIGH); // yellow light
+ _ledFL.on(duration);
+ _ledFR.on(duration);
+ }
+ 
+ 
+ void Lights::indicateRight(int duration)
+ {
+ _isRight = true;
+ _isLeft = false;
+ _ledFL.setColour(HIGH, HIGH, HIGH); // yellow light
+ _ledFR.setColour(LOW, HIGH, HIGH); // yellow light
+ _ledFL.on(duration);
+ _ledFR.on(duration);
+ }
+ 
+ 
+ void Lights::cancelIndicating()
+ {
+ _isRight = false;
+ _isLeft = false;
+ _ledFL.setColour(HIGH, HIGH, HIGH); // yellow light
+ _ledFR.setColour(HIGH, HIGH, HIGH); // yellow light
+ _ledFL.off();
+ _ledFR.off();
+ }
+ */
+
