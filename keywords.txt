@@ -1,0 +1,4 @@
+Servo   KEYWORD1
+point   KEYWORD2
+calibrate   KEYWORD2
+debug   KEYWORD2
