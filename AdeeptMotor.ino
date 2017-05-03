@@ -25,9 +25,10 @@ int mode[1];
 Servo dirServo;                  // define servo to control turning of smart car
 int dirServoPin = 2;              // define pin for signal line of the last servo
 float dirServoOffset = 6;         // define a variable for deviation(degree) of the servo
+
 Servo ultrasonicServo;           // define servo to control turning of ultrasonic sensor
 int ultrasonicPin = 3;            // define pin for signal line of the last servo
-float ultrasonicServoOffset = 15; // define a variable for deviation(degree) of the servo
+float ultrasonicServoOffset = -15; // define a variable for deviation(degree) of the servo
 
 int trigPin = 0;                  // define Trig pin for ultrasonic ranging module
 int echoPin = 1;                  // define Echo pin for ultrasonic ranging module
@@ -61,9 +62,11 @@ void setup() {
   radio.openReadingPipe(1, addresses);// open delivery channel
   radio.startListening();             // start monitoring
 
-//  Serial.begin(9600); // initialize serial port
+  Serial.begin(9600); // initialize serial port
+  
   dirServo.attach(dirServoPin);  // attaches the servo on servoDirPin to the servo object
   ultrasonicServo.attach(ultrasonicPin);  // attaches the servo on ultrasonicPin to the servo object
+
   pinMode(dirAPin, OUTPUT);   // set dirAPin to output mode
   pinMode(pwmAPin, OUTPUT);   // set pwmAPin to output mode
   pinMode(dirBPin, OUTPUT);   // set dirBPin to output mode
@@ -84,8 +87,14 @@ void loop()
       mode[0]=0;
     //  radio.write( mode, sizeof(mode) );
       // calculate the steering angle of servo according to the direction joystick of remote control and the deviation
-      int dirServoDegree = map(data[0], 0, 1023, 135, 45) - (data[7] - 512) / 25; 
-      int ultrasonicServoDegree = map(data[8], 0, 1023, 135, 45) - (data[7] - 512) / 25; 
+      
+
+      Serial.print(data[0]);
+      Serial.print("   ");
+      int dirServoDegree = map(data[0], 0, 1023, 135, 45) - (data[7] - 512) / 10; 
+      Serial.println(dirServoDegree);
+      
+      int ultrasonicServoDegree = map(data[8], 0, 1023, 135, 45) - (data[7] - 512) / 10; 
       // get the steering angle and speed of servo according to the speed joystick of remote control and the deviation
       int motorSpd = data[1] - 512 + (data[6] - 512) / 10;
       bool motorDir = motorSpd > 0 ? BACKWARD : FORWARD;
@@ -95,10 +104,11 @@ void loop()
       ctrlCar0(dirServoDegree,ultrasonicServoDegree, motorDir, motorSpd);
       switch(RGBVal){
         case 0: digitalWrite(RPin, HIGH);digitalWrite(GPin, HIGH);digitalWrite(BPin, HIGH);break;
-        case 1: digitalWrite(RPin, LOW);digitalWrite(GPin, LOW);digitalWrite(BPin, LOW);   break;
+        case 1: digitalWrite(RPin, LOW);digitalWrite(GPin, LOW);digitalWrite(BPin, LOW); break;
         case 2: digitalWrite(RPin, LOW);digitalWrite(GPin, HIGH);digitalWrite(BPin, HIGH); break;
         case 3: digitalWrite(RPin, HIGH);digitalWrite(GPin, LOW);digitalWrite(BPin, HIGH); break;
         case 4: digitalWrite(RPin, HIGH);digitalWrite(GPin, HIGH);digitalWrite(BPin, LOW); break;
+        case 5: analogWrite(RPin, random(255));analogWrite(GPin, random(255));analogWrite(BPin, random(255)); break;
         default: break;
       }
   }
@@ -194,6 +204,9 @@ void receiveData(){
 }
 void ctrlCar0(byte dirServoDegree,byte ultrasonicServoDegree, bool motorDir, byte motorSpd) {
   dirServo.write(dirServoDegree + dirServoOffset);
+  Serial.println(dirServoDegree);
+  //dirServo.write(135);
+
   ultrasonicServo.write(ultrasonicServoDegree + ultrasonicServoOffset);
   digitalWrite(dirAPin, motorDir);
   digitalWrite(dirBPin, motorDir);
@@ -226,3 +239,4 @@ float getDistance() {
   else                  // if the measure is overtime
     return maxDistance; // returns the maximum distance(cm)
 }
+
