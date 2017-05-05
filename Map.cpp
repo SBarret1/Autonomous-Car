@@ -9,8 +9,6 @@
 //#include <Servo.h>
 #include "ServoMotor.h"
 #include "Rangefinder.h"
-#include "Vector.h"
-
 
 
 ServoMotor::Rangefinder(){
@@ -20,7 +18,7 @@ ServoMotor::setPins(int servoPin, int triggerPin, int echoPin)
 {
     _serverMotor.setPins(int servoPin);
     _triggerPin = triggerPin;
-    _echoPin = echoPin;
+    _echoPin = echoPin
 
     pinMode(trigPin, OUTPUT); // set trigPin to output mode
     pinMode(echoPin, INPUT);  // set echoPin to input mode
@@ -29,16 +27,8 @@ ServoMotor::setPins(int servoPin, int triggerPin, int echoPin)
 
 ServoMotor::point(float angle)
 {
-    _looking=angle;
+    _looking=angle
     _serverMotor.point(int _looking);
-}
-
-
-ServoMotor::normalise(float thou)
-{
-    looking = map(thou, 0, 1023, _minAngle, _maxAngle);  // range of looking is between min and max angle
-    return looking
-
 }
 
 
@@ -57,12 +47,12 @@ ServoMotor::getDistance()
     float distance;         // save the distance away from obstacle
     
     // set the trigPin output 10us high level to make the ultrasonic ranging module start to measure
-    digitalWrite(_triggerPin, LOW);
+    digitalWrite(trigPin, LOW);
     delayMicroseconds(2);
     
-    digitalWrite(_triggerPin, HIGH);
+    digitalWrite(trigPin, HIGH);
     delayMicroseconds(10);
-    digitalWrite(_triggerPin, LOW);
+    digitalWrite(trigPin, LOW);
     
     // get the high level time returned by ultrasonic ranging module
     pingTime = pulseIn(echoPin, HIGH, rangingTimeOut);
@@ -97,19 +87,15 @@ ServoMotor::getDistance()
 
 ServoMotor::makeMap()
 {
-    
-distance from obstacles
-
-    float barDegree = _minAngle;
-    float barDistance = _maxDistance;
-
+    barDistance = maxDistance; // save the minimum measured distance from obstacles
     byte distance;                  // save the current the measured distance from obstacles
     
-    rangefinder.point(_minAngle);
+    pointUltrasonic(minAngle);
+    delay(200);
     
     // start to scan distance. During this progress, we will get the distance and angle from the closest obstacle
-    for (byte lookingAngle = _minAngle; lookingAngle < _maxAngle; lookingAngle += 10) {
-        rangefinder.point(lookingAngle); // steer pan tilt to corresponding position
+    for (byte lookingAngle = minAngle; lookingAngle < maxAngle; lookingAngle += 10) {
+        pointUltrasonic(lookingAngle); // steer pan tilt to corresponding position
         delay(50);                // wait 50ms between pings (about 20 pingsc). 29ms should be the shortest delay between pings.
         //receiveData();
         distance = getDistance(); // detect the current distance from obstacle with angle of pan tilt stable
@@ -126,14 +112,11 @@ distance from obstacles
     } //for
     Serial.println();
     Serial.print("   theta:  ");
-    Serial.print(v.angle());
+    Serial.print(barDegree);
     Serial.print("  distance: ");
-    Serial.print(v.distance());
-    rangefinder.point(90); // servo of pan tilt turns to default position
+    Serial.print(barDistance);
+    pointUltrasonic(90); // servo of pan tilt turns to default position
     delay(200);
-
-    Vector v = Vector(barDegree,barDistance); // save the minimum measured
-    return v;
 }
 
 

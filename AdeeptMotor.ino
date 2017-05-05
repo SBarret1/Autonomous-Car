@@ -1,5 +1,7 @@
 
 
+
+
 /***********************************************************
 File name:  AdeeptMotor.ino
 Description:  
@@ -44,19 +46,44 @@ Things to Try
 #include <Horn.h>
 #include <Lights.h>
 #include <ServoMotor.h>
+#include <Rangefinder.h>
+//#include <Vector.h>
 
+//buzzer
+   const int buzzerPin = 8;  // define pin for buzzer
+   Horn horn(buzzerPin);  //pinMode(buzzerPin, OUTPUT); // set buzzerPin to output mode
+   bool buzzer = false;
+   
 // Lights
-  const int RPin = A3; 
-  const int GPin = A4; 
-  const int BPin = A5; 
-  bool lightSwitch = false;
-  Lights lights;
+   const int RPin = A3; 
+   const int GPin = A4; 
+   const int BPin = A5; 
+   bool lightSwitch = false;
+   Lights lights;
 
 //Servo
-  int dirServoPin = 2;              // define pin for signal line of the last servo
-  // int steering = 90;
-  // Servo dirServo;                  // define servo to control turning of smart car
-  ServoMotor steering;
+   const int dirServoPin = 2;              // define pin for signal line of the last servo
+   // int steering = 90;
+   // Servo dirServo;                  // define servo to control turning of smart car
+   ServoMotor steering;
+
+//Rangefinder
+   const int ultrasonicPin = 3;            // define pin for signal line of the last servo
+   const int triggerPin = 11;                  // define Trig pin for ultrasonic ranging module
+   const int echoPin = 12;                  // define Echo pin for ultrasonic ranging module
+   Rangefinder rangefinder;
+   float looking = 90;
+   
+   /*
+   Servo ultrasonicServo;           // define servo to control turning of ultrasonic sensor
+   int servoOffset = 0;
+   int maxAngle = 135;
+   int minAngle = 45;
+   float barDegree = 90;
+   float barDistance = 0;
+   float maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
+   */
+
 
 RF24 radio(9, 10);                // define the object to control NRF24L01
 byte addresses[5] = "00007";      // define communication address which should correspond to remote control
@@ -71,24 +98,7 @@ const int snsBPin = 1;    // define pin for detecting current of motor B
 int carSpeed = 0;
 int motorOffset = 0;
 
-const int buzzerPin = 8;  // define pin for buzzer
-Horn horn(buzzerPin);  //pinMode(buzzerPin, OUTPUT); // set buzzerPin to output mode
-
 bool isAutonomous = false;
-
-bool buzzer = false;
-
-Servo ultrasonicServo;           // define servo to control turning of ultrasonic sensor
-int ultrasonicPin = 3;            // define pin for signal line of the last servo
-int looking = 90;
-int servoOffset = 0;
-int maxAngle = 135;
-int minAngle = 45;
-float barDegree = 90;
-float barDistance = 0;
-int trigPin = 11;                  // define Trig pin for ultrasonic ranging module
-int echoPin = 12;                  // define Echo pin for ultrasonic ranging module
-float maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
 
 #define FORWARD LOW
 #define BACKWARD HIGH
@@ -111,7 +121,8 @@ void setup() {
    steering.setPins(dirServoPin);           // attaches the servo on servoDirPin to the servo object
    //dirServo.attach(dirServoPin);  // attaches the servo on servoDirPin to the servo object
 
-   ultrasonicServo.attach(ultrasonicPin);  // attaches the servo on ultrasonicPin to the servo object
+   rangefinder.setPins(ultrasonicPin,triggerPin,echoPin);
+   //ultrasonicServo.attach(ultrasonicPin);  // attaches the servo on ultrasonicPin to the servo object
 
    pinMode(dirAPin, OUTPUT);   // set dirAPin to output mode
    pinMode(pwmAPin, OUTPUT);   // set pwmAPin to output mode
@@ -123,8 +134,8 @@ void setup() {
    pinMode(GPin, OUTPUT);   // set GPin to output mode
    pinMode(BPin, OUTPUT);   // set BPin to output mode
 
-   pinMode(trigPin, OUTPUT); // set trigPin to output mode
-   pinMode(echoPin, INPUT);  // set echoPin to input mode
+   // pinMode(trigPin, OUTPUT); // set trigPin to output mode
+   // pinMode(echoPin, INPUT);  // set echoPin to input mode
 
    lights.setPins(RPin, GPin, BPin, RPin, GPin, BPin);
    lights.mainLights();
@@ -138,20 +149,21 @@ void setup() {
 void loop() {
    receiveData();
    
-  if (buzzer) {horn.beep(2000);}
+   // if (buzzer) {horn.beep(2000);}
    if (buzzer) {tone(buzzerPin, 2000);} else {noTone(buzzerPin);}
    if (lightSwitch) {lights.nextColour();}
 
    if (!isAutonomous) { 
-       ctrlCar (steering, carSpeed);
-       pointUltrasonic(looking);
-       getDistance();
+       ctrlCar (steering.pointing(), carSpeed);
+       // rangefinder.point(looking);
+       // int i = rangefinder.getDistance();
    } 
 
    if (isAutonomous) {
-   /*
-      makeMap();
-      int spd = 128;  // set the speed(0-255) of smart car
+
+      rangefinder.makeMap();
+   /*      
+    *       int spd = 128;  // set the speed(0-255) of smart car
       int ang = 0;
       if (barDegree < 90) {ang = maxAngle;} else {ang = minAngle;}  
       if (barDistance < 20) {ctrlCar(ang, -spd);}
@@ -206,7 +218,7 @@ void receiveData() {
       //servoOffset = map(data[7], 0, 1023, -20, 20);
       steering.calibrate(data[7]);
 
-      looking = map(data[8], 0, 1023, minAngle, maxAngle);  // range of looking is between min and max angle 
+      looking = rangefinder.normalise(data[8]);  // range of looking is between min and max angle 
    }
 }
 
@@ -242,122 +254,3 @@ void ctrlCar(float _steeringAngle, float _motorSpd) {
 }
 
 
-
-//-------------------------------------------------------------------------
-// RANGE FINDER functions
-//-------------------------------------------------------------------------
-
-void pointUltrasonic (float _ultrasonicServoDegree) {
-   // Aim the rangefinder, hiding the details of how to get it to point exactly that direction
-
-   _ultrasonicServoDegree = constrain(_ultrasonicServoDegree + servoOffset, minAngle, maxAngle);
-    ultrasonicServo.write(_ultrasonicServoDegree);
-   
-    Serial.print(" pointUltra() - looking: ");
-    Serial.print(_ultrasonicServoDegree);
-}
-
-
-
-float getDistance() {
-   float soundVelocity = 340;        // Sound velocity = 340 m/s
-   float rangingTimeOut = 2 * maxDistance / 100 / soundVelocity * 1000000; // define the timeout(ms) for ultrasonic ranging module
-
-   unsigned long pingTime; // save the high level time returned by ultrasonic ranging module
-   float distance;         // save the distance away from obstacle
-
-   // set the trigPin output 10us high level to make the ultrasonic ranging module start to measure
-   digitalWrite(trigPin, LOW);
-   delayMicroseconds(2);
-  
-   digitalWrite(trigPin, HIGH);
-   delayMicroseconds(10);
-   digitalWrite(trigPin, LOW);
-
-   // get the high level time returned by ultrasonic ranging module
-   pingTime = pulseIn(echoPin, HIGH, rangingTimeOut);
-   distance = (pingTime / 2) * 0.0344;
- 
-     Serial.println("   ");
-     Serial.print("    Ping time = ");
-     Serial.print(pingTime);
-     Serial.print("    distance = ");
-     Serial.print(distance);
-     Serial.print (" cm     ");
-
-  if (distance >= 400 || distance <= 2) {
-     Serial.print("Distance = ");
-     Serial.print(distance);
-     Serial.print("Out of range");
-
-  }
-
-  if (pingTime != 0) {  // if the measure is not overtime
-
-    //distance = pingTime * soundVelocity / 2 / 10000;  // calculate the obstacle distance(cm) according to the time of high level returned
-    // Serial.print("   getDistance() - distance: ");
-    //Serial.println(distance);
-    return distance;    // return distance(cm)
-  }
-  else                  // if the measure is overtime
-    return maxDistance; // returns the maximum distance(cm)
-}
-
-
-
-
-void makeMap() {
-   barDistance = maxDistance; // save the minimum measured distance from obstacles
-   byte distance;                  // save the current the measured distance from obstacles
-      
-   pointUltrasonic(minAngle);
-   delay(200);
-
-   // start to scan distance. During this progress, we will get the distance and angle from the closest obstacle
-   for (byte lookingAngle = minAngle; lookingAngle < maxAngle; lookingAngle += 10) {
-      pointUltrasonic(lookingAngle); // steer pan tilt to corresponding position
-      delay(50);                // wait 50ms between pings (about 20 pingsc). 29ms should be the shortest delay between pings.
-      //receiveData();
-      distance = getDistance(); // detect the current distance from obstacle with angle of pan tilt stable
-      Serial.println();
-      Serial.print("   test theta:  ");
-      Serial.print(lookingAngle);
-      Serial.print("  test distance: ");
-      Serial.print(distance);
-      if (distance < barDistance) { // if the current measured distance is smaller than the previous one, save the data of current measured distance
-         barDegree = lookingAngle;       // save the measured angle
-         barDistance = distance;     // save the measured distance
-
-      }
-   } //for
-   Serial.println();
-   Serial.print("   theta:  ");
-   Serial.print(barDegree);
-   Serial.print("  distance: ");
-   Serial.print(barDistance);
-   pointUltrasonic(90); // servo of pan tilt turns to default position
-   delay(200);
-}
-
-
-/*      
-void leds() {
-      RGBVal++ ;
-      RGBVal=RGBVal%5;
-
-      int r = LOW; int g = LOW; int b = LOW;
-      switch(RGBVal){
-        case 0: r=HIGH;g=HIGH;b=HIGH;break;
-        case 1: r=LOW;g=LOW;b=LOW;break;
-        case 2: r=LOW;g=HIGH;b=HIGH;break;
-        case 3: r=HIGH;g=LOW;b=HIGH;break;
-        case 4: r=HIGH;g=HIGH;b=LOW;break;
-        default: break;
-      }
-
-      digitalWrite(RPin, r);
-      digitalWrite(GPin, g);
-      digitalWrite(BPin, b);
-  }
-  */
-  

@@ -33,7 +33,6 @@
 #define Rangefinder_h
 
 #include "Arduino.h"
-#include "Vector.h"
 #include <Servo.h>
 
 class Rangefinder
@@ -46,8 +45,7 @@ class Rangefinder
     // int angle(int reading); // in degrees
     // int pointing(); // in degrees
     int getDistance();
-    float normalise(float thou);
-    Vector makeMap();
+    void makeMap();
     void debug(); // in degrees
 
 
@@ -56,17 +54,17 @@ private:
     int _looking = 90;
     int _triggerPin;                  // define Trig pin for ultrasonic ranging module
     int _echoPin;                  // define Echo pin for ultrasonic ranging module
-    float _maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
-    int _minAngle = 45;
-    int _maxAngle = 135;
 
-    
+    // int _ultrasonicPin = 3;            // define pin for signal line of the last servo
+
     /*
-    int _ultrasonicPin = 3;            // define pin for signal line of the last servo
     int servoOffset = 0;
+    int maxAngle = 135;
+    int minAngle = 45;
+    float barDegree = 90;
+    float barDistance = 0;
 
-
-
+    float maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
 */
 };
 

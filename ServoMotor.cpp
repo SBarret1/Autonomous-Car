@@ -2,8 +2,8 @@
   Servo_cpp - Library for Servos
 */
 
-#ifndef Servo_h
-#define Servo_h
+#ifndef ServoMotor_h
+#define ServoMotor_h
 
 #include "Arduino.h"
 //#include <Servo.h>
@@ -60,3 +60,5 @@ ServoMotor::debug()
     Serial.print(_maxAngle);
     Serial.println(" degrees. ");
 }
+
+#endif
