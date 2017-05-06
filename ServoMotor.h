@@ -1,5 +1,5 @@
 /*
-  Servo_h - Library for Servos
+ ServoMotor_cpp - Library for ServoMotors
  
  Purpose: Hardware layer, operate a Servo. Turning
  Contract  ----------------------------------------------

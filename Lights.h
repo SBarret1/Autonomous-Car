@@ -54,8 +54,7 @@ class Lights
     // void hazardLights();
     // void reversingLights();
 
-
-
+    
 private:
     LED _ledFL;
     LED _ledFR;

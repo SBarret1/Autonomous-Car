@@ -1,27 +1,27 @@
 /*
-  Rangefinder_h - Library for Rangefinder on a Servo
+  Map_h - Library to enable a rangefinder to manipulate a rose map of polar coodinates, with different granularity
  
- Purpose: Hardware layer, operate a Rangefinder
+ Purpose: Enable rangefinder to manipulate a rose map of polar coodinates, with different granularity
+
  Contract  ----------------------------------------------
  
- Guarantee: Read Distances, pont, returns a map
- Preconditions: Point should be in angles.
+ Guarantee:
+ Preconditions:
  
- Finite State Machine: First setPins, calibrate, then repeatedly point and ceck distance.
+ Finite State Machine:
  
  
  INTERNAL ----------------------------------------------
  
- Translation Needed: 0-1023, to x - y degrees
+ Translation Needed:
  
  Workarounds:
  
  To Do:
-    1. Update Private Varaibles and incorporate into motor.ino
-    2. Make MakMap return a direction and or Distance
+    1.
  
  Issues
-    1. Makemap needs to return an angle and distance. need a Vector object?
+    1.
  
  Design Decisions
     1.
@@ -29,43 +29,23 @@
  
 */
 
-#ifndef Rangefinder_h
-#define Rangefinder_h
+#ifndef Map_h
+#define Map_h
 
 #include "Arduino.h"
-#include <Servo.h>
+#include <vector.h>
+#include "Polar.h"
 
-class Rangefinder
+class Map
 {
   public:
-    Rangefinder();
-    void setPins(int servoPin, int triggerPin, int echoPin);
-    void point(int angle); // in degrees
-    void calibrate(int offset); // in degrees
-    // int angle(int reading); // in degrees
-    // int pointing(); // in degrees
-    int getDistance();
-    void makeMap();
+    Map(int elements);
+    void addReading(Polar reading);
+    Polar closestReading();
     void debug(); // in degrees
 
-
 private:
-    ServoMotor _servoMotor;
-    int _looking = 90;
-    int _triggerPin;                  // define Trig pin for ultrasonic ranging module
-    int _echoPin;                  // define Echo pin for ultrasonic ranging module
-
-    // int _ultrasonicPin = 3;            // define pin for signal line of the last servo
-
-    /*
-    int servoOffset = 0;
-    int maxAngle = 135;
-    int minAngle = 45;
-    float barDegree = 90;
-    float barDistance = 0;
-
-    float maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
-*/
+    vector <Polar> _readings;
 };
 
 #endif

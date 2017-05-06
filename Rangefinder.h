@@ -17,7 +17,7 @@
  Workarounds:
  
  To Do:
-    1. Update Private Varaibles and incorporate into motor.ino
+    1. Update Private Variables and incorporate into motor.ino
     2. Make MakMap return a direction and or Distance
  
  Issues
@@ -33,7 +33,8 @@
 #define Rangefinder_h
 
 #include "Arduino.h"
-#include "Vector.h"
+#include "Polar.h"
+#include "Ultrasonic.h"
 #include <Servo.h>
 
 class Rangefinder
@@ -47,15 +48,14 @@ class Rangefinder
     // int pointing(); // in degrees
     int getDistance();
     float normalise(float thou);
-    Vector makeMap();
+    Polar makeMap();
     void debug(); // in degrees
 
 
 private:
     ServoMotor _servoMotor;
+    Ultrasonic _ultrasonic;
     int _looking = 90;
-    int _triggerPin;                  // define Trig pin for ultrasonic ranging module
-    int _echoPin;                  // define Echo pin for ultrasonic ranging module
     float _maxDistance = 200;          // define the range(cm) for ultrasonic ranging module, Maximum sensor distance is rated at 400-500cm.
     int _minAngle = 45;
     int _maxAngle = 135;
@@ -64,10 +64,7 @@ private:
     /*
     int _ultrasonicPin = 3;            // define pin for signal line of the last servo
     int servoOffset = 0;
-
-
-
-*/
+    */
 };
 
 #endif
