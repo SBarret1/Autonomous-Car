@@ -1,10 +1,10 @@
 /*
-  Map_h - Library to enable a rangefinder to manipulate a rose map of polar coodinates, with different granularity
+   Object: Map
 */
 
 
 #include "Arduino.h"
-#include <vector>
+#include <ArduinoSTL.h>
 #include "Polar.h"
 
 
@@ -17,13 +17,16 @@ void Map::addReading(Polar reading)
     _readings.push_back(reading);
 }
 
-
-Polar Map::closestReading(int max)
+int Map::numberOfReadings()
 {
-    
-    
-    barDistance = max; // save the minimum measured distance from obstacles
-    barAngle = 0;
+    return _readings.size();
+}
+
+
+Polar Map::nearest()
+{
+    int barDistance = reading[0].distance(); // save the minimum measured distance from obstacles
+    int barAngle = 0;
     
     for (int i  = 0; i < readings.size(); i++) {
         Polar t = readings.at(i);
@@ -37,8 +40,41 @@ Polar Map::closestReading(int max)
     } //for
 }
 
+Polar Map::furthest()
+{
+    int barDistance = reading[0].distance(); // save the minimum measured distance from obstacles
+    int barAngle = 0;
+    
+    for (int i  = 0; i < readings.size(); i++) {
+        Polar t = readings.at(i);
+        if (t.distance() > barDistance) { // if the current measured distance is smaller than the previous one, save the data of current measured distance
+            barAngle = t.angle();       // save the measured angle
+            barDistance = t.distance();     // save the measured distance
+            
+        }
+        Polar p = Polar(barAngle,barDistance); // save the minimum measured
+        return p;
+    } //for
+}
+
+
+
+void Map::reset()
+{
+    _readings.clear();
+}
 
 Map::debug()
 {
-    
+    Serial.print("  Map Contents: {");
+    for (int i  = 0; i < readings.size(); i++) {
+        Serial.print(" (");
+        Serial.print(_readings[i].angle());
+        Serial.print(",");
+        Serial.print(_readings[i].distance());
+        Serial.print(")  ");
+    }
+    Serial.println("} ");
+    Serial.print(_readings[i].size());
+    Serial.print(" readings ")
 }

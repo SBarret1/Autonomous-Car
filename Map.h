@@ -1,31 +1,15 @@
 /*
-  Map_h - Library to enable a rangefinder to manipulate a rose map of polar coodinates, with different granularity
+   Object: Map
  
- Purpose: Enable rangefinder to manipulate a rose map of polar coodinates, with different granularity
-
- Contract  ----------------------------------------------
- 
- Guarantee:
- Preconditions:
- 
- Finite State Machine:
- 
- 
- INTERNAL ----------------------------------------------
- 
- Translation Needed:
- 
- Workarounds:
- 
- To Do:
-    1.
- 
- Issues
-    1.
- 
- Design Decisions
-    1.
-
+   Intent: Manipulate a set of polar coodinates, with different levels of granularity
+   Interface: distnace in cm, angles in degrees
+   Usage: create, then addReading/size, then closest/furthest/sum, then reset
+   Choices:
+   Open: 
+        Whats the effect of int, does it round
+        reset();
+        find out how to do Polar addition (and is there a class I should be using in stead of my own)
+        how to deal with the potentially empty reading set.
  
 */
 
@@ -33,7 +17,7 @@
 #define Map_h
 
 #include "Arduino.h"
-#include <vector.h>
+#include <ArduinoSTL.h>
 #include "Polar.h"
 
 class Map
@@ -41,11 +25,15 @@ class Map
   public:
     Map(int elements);
     void addReading(Polar reading);
-    Polar closestReading();
+    int numberOfReadings();
+    Polar nearest();
+    Polar furthest();
+    Polar sum();
+    void reset();
     void debug(); // in degrees
 
 private:
-    vector <Polar> _readings;
+    Vector <Polar> _readings;
 };
 
 #endif
