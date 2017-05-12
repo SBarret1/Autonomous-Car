@@ -23,6 +23,13 @@ int Polar::distance()
 }
 
 
+int Polar::add(Polar p)
+{
+    return 0;
+}
+
+
+
 void Polar::debug()
 {
     

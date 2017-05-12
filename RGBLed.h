@@ -23,11 +23,9 @@
       Can I make LOW represent off?
       Can I do colours beyond just HIGH and LOW - with analogWrite(pin, vlaue) where value 0-255
       Does greySequence of colours create a smoother colour sequence
-      How to use constructors with parameters
       enable flashing
       is_off and _HIgh defined
       create subroutine for the digital writes...
-      add something that makse teh light flash until it is switched off
       When flashing, have a background colour (possibly none) that you are alternating with
 
 */

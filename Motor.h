@@ -1,35 +1,18 @@
 /*
-  Motor_h - Library for H bridge dual Motor
+   Object: Single Motor
  
- Purpose: Hardware layer, operate a Motor. Changing Speed
- Contract  ----------------------------------------------
- 
- Guarantee:  
- 
- Preconditions:
- 
- Finite State Machine: First setPins, calibrate, then repeatedly change speed.
- 
- 
- INTERNAL ----------------------------------------------
- 
- Translation Needed:
- 
- Workarounds:
- 
- To Do:
- 1.
- 
- Issues
- 
- Design Decisions
- 1.
-
- 
+   ??
+   Intent: Operate a single HW Motor directly
+   Interface: 
+        Language: Speed 0..255, Calibrate 1..1023
+        HW Motor (drive() translates): Speed 0..255, six pins (pwm, direction and current sensing * 2
+   Usage: First setPins, calibrate, then repeatedly change speed.
+   Choices:
 */
 
 #ifndef Motor_h
 #define Motor_h
+
 #include <Servo.h>
 #include "Arduino.h"
 
@@ -37,7 +20,7 @@ class Motor
 {
   public:
     Motor();
-    void setPins(int dirAPin, int pwmAPin, int dirBPin, int pwmBPin);
+    void setPins(int dirPin, int pwmPin);
     void drive(int speed); // in degrees
     void calibrate(int offset); // in degrees
     int speed(); // in degrees
@@ -46,12 +29,11 @@ class Motor
 
 private:
     Servo _servo;
-    int _dirAPin;
-    int _pwmAPin;
-    int _dirBPin;
-    int _pwmBPin;
-    int _speed; // in degrees
-    int _offset; // in degrees
+    int _dirPin;
+    int _pwmPin;
+    int _speed;
+    int _direction;
+    int _offset; 
     int _offsetAccuracy = 50;
 };
 

@@ -1,30 +1,12 @@
 
-
-
 /***********************************************************
-Original Version - Website: www.adeept.com, E-mail: support@adeept.com, Author: Tom, Date: 2016/12/26 
+   Original Version - Website: www.adeept.com, E-mail: support@adeept.com, Author: Tom, Date: 2016/12/26 
 
-Intent: 
-Interface: 
-Usage: 
-Choices: 
-
-Opens:
-  Determine if 90is straight ahead and 0 is to the left or right
-  Shift some work to the handset (can deviation remain there?)
-  ensure direction working OK
-  can I read the motor current
-  slow car gradually
-  speed depends on distance delay
-  check out buzzer delay
-  are multiple threads going to help
-  See if rangefinder hardware is working
-  Change buttons to one ping only, boolaean
-  add HW arduino object with Pins
-  Decide if buzzer and Lights get executed every time or if its based on bool status
-  Can I use the current sensing pins
-  
-***********************************************************/
+   Intent: 
+   Interface: 
+   Usage: 
+   Choices: 
+*/
 
 #include <SPI.h>
 #include "RF24.h"
@@ -33,7 +15,7 @@ Opens:
 #include <Map.h>
 #include <Headlamps.h>
 #include <ServoMotor.h>
-#include <Motor.h>
+#include <Engine.h>
 #include <Rangefinder.h>
 #include <ArduinoSTL.h>
 
@@ -67,7 +49,8 @@ Opens:
    const int pwmBPin = 5;    // define pin for PWM used to control rotational speed of motor B
    // const int snsAPin = 0;    // define pin for detecting current of motor A
    // const int snsBPin = 1;    // define pin for detecting current of motor B
-   Motor engine;
+   Engine engine;
+   int carSpeed = 0;
 
 //Radio
    RF24 radio(9, 10);                // define the object to control NRF24L01
@@ -117,16 +100,17 @@ void loop() {
    } 
 
    if (isAutonomous) {
-      Map m2 = rangefinder.makeMap();
-      Polar p = m2.closestReading();
+      Map m = rangefinder.makeMap();
+      Polar p = m.nearest();
       int dist = p.distance();
-      int spd = 128;                  // set the speed(0-255) of smart car
       int ang = p.angle();
-      if (ang < 90) {ang = maxAngle;} else {ang = minAngle;}  
-      if (dist  < 20) {ctrlCar(ang, -spd);}
+      int spd = 128;                  // set the speed(0-255) of smart car
+
+      if (ang < 90) {ang = steering.max();} else {ang = steering.min();}  
+      if (dist < 20) {ctrlCar(ang, -spd);}
       else if (dist < 50) {ctrlCar(ang, spd);}
       else {ctrlCar(90, spd);}
-      delay(1500);              // moving time time
+      delay(1500);   
       ctrlCar(90, 0);   // make the smart car stop for preparation of next scanning
    } //if !isAutonomous
    

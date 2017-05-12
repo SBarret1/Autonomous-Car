@@ -18,13 +18,13 @@ Rangefinder::Rangefinder(){
 void Rangefinder::setPins(int servoPin, int triggerPin, int echoPin)
 {
     _servoMotor.setPins(servoPin);
+    _servoMotor.point(90);
     _ultrasonic.setPins(triggerPin,echoPin);
 }
 
 
 void Rangefinder::point(int angle)
 {
-    _looking=angle;
     _servoMotor.point(_looking);
 }
 
@@ -47,29 +47,23 @@ float Rangefinder::normalise(float thou)
 }
 
 
-Polar Rangefinder::makeMap()
+Map Rangefinder::makeMap(int slices)
 {
-    float barDegree = _minAngle;
-    float barDistance = _maxDistance;
-    byte distance;                  // save the current the measured distance from obstacles
     Map m;
-
+    float width = (_maxAngle - _minAngle)/slices;
     _servoMotor.point(_minAngle);
-    
-    // start to scan distance. During this progress, we will get the distance and angle from the closest obstacle
-    for (byte lookingAngle = _minAngle; lookingAngle < _maxAngle; lookingAngle += 10) {
-        _servoMotor.point(lookingAngle); // steer pan tilt to corresponding position
+
+    for (byte lookingAngle = _minAngle; lookingAngle < _maxAngle; lookingAngle += width) {
+        _servoMotor.point(lookingAngle);
         delay(50);                // wait 50ms between pings (about 20 pingsc). 29ms should be the shortest delay between pings.
-        //receiveData();
-        distance = getDistance();// detect the current distance from obstacle with angle of pan tilt stable
+        byte distance = getDistance();// detect the current distance from obstacle with angle of pan tilt stable
         m.addReading(lookingAngle,distance);
         }
     } //for
-    
     _servoMotor.point(90); // servo of pan tilt turns to default position
     delay(200);
 
-    return  m.closestReading(int max);
+    return  m;
 }
 
 

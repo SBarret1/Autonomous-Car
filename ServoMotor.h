@@ -1,29 +1,21 @@
 /*
- ServoMotor_cpp - Library for ServoMotors
+   Object: ServoMotor
  
- Purpose: Hardware layer, operate a Servo. Turning
- Contract  ----------------------------------------------
+   Intent: Operate servo HW - Turn Servo linearly, between minAngle and maxAngle degrees, accounting for assembly offset error
+        Language: 
+            angle is degrees 
+                point() uses degrees and talkes into account the offset
+                readdata() takes 0..1023 and converts int angle (ignoring offset)
  
- Guarantee: Turn Servo linearly, between minAngle and maxAngle degrees, accounting for assembly offset error
- 
- Preconditions: Input should be 0-1023, centred on 512
- 
- Finite State Machine: First setPins, calibrate, then repeatedly point.
- 
- 
- INTERNAL ----------------------------------------------
- 
- Translation Needed: 0-1023, to 10 - 170 degrees
- 
- Workarounds:
- 
- To Do:
- 1.
- 
- Issues
- 
- Design Decisions
- 1.
+            offset is ???
+   Interface: 
+        Input should be 0-1023, centred on 512
+        HW Map input to 10 - 170 degrees
+   Usage: First setPins, calibrate, then repeatedly point.
+   Choices: 
+        Translate 0..1023 to degrees in readDta()
+        Apply offset at the point of use
+        Language of architecture is degrees
 
  
 */
@@ -40,17 +32,19 @@ class ServoMotor
     ServoMotor();
     void setPins(int servoPin);
     void point(int angle); // in degrees
-    void calibrate(int offset); // in degrees
-    int angle(int reading); // in degrees
-    int pointing(); // in degrees
-    void debug(); // in degrees
+    void calibrate(int offset);
+    int normalise(int reading);
+    int pointing();
+    int max();
+    int min();
+    void debug();
 
 
 private:
     Servo _servo;
     int _servoPin;
-    int _angle; // in degrees
-    int _offset; // in degrees
+    int _angle; // in degrees, not 1023
+    int _offset; // in degrees, not 1023
     int _maxAngle = 135; // in degrees
     int _minAngle = 45;  // in degrees
     int _offsetAccuracy = 20;

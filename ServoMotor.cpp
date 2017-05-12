@@ -1,9 +1,7 @@
 /*
-  ServoMotor_cpp - Library for ServoMotors
+  Object: ServoMotor
 */
 
-//#ifndef ServoMotor_h
-//#define ServoMotor_h
 
 #include "Arduino.h"
 #include <Servo.h>
@@ -16,7 +14,7 @@ ServoMotor::ServoMotor(){
 void ServoMotor::setPins(int servoPin)
 {
     _servoPin = servoPin;
-    _servo.attach(servoPin);  // attaches the servo on servoDirPin to the servo object
+    _servo.attach(_servoPin);  // attaches the servo on servoDirPin to the servo object
 }
 
 
@@ -33,7 +31,7 @@ void ServoMotor::calibrate(int offset)
 }
 
 
-int ServoMotor::angle(int reading)
+int ServoMotor::normalise(int reading, int offset)
 {
     int angle = map(reading, 0, 1023, _minAngle, _maxAngle); // steering is between min and max angle
     return angle;
@@ -44,6 +42,16 @@ int ServoMotor::angle(int reading)
 int ServoMotor::pointing()
 {
     return _angle;
+}
+
+int ServoMotor::min()
+{
+    return _minAngle;
+}
+
+int ServoMotor::max()
+{
+    return _maxAngle;
 }
 
 

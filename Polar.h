@@ -1,32 +1,10 @@
 /*
-  Polar_h - Library to store a single polar coordinate
+   Object: Polar
  
- Purpose: Enable one read of a map and return one parameter with both angle and distance without having to reread teh whole map
- 
- Contract  ----------------------------------------------
- 
- Guarantee:
- Preconditions:
- 
- Finite State Machine:
- 
- 
- INTERNAL ----------------------------------------------
- 
- Translation Needed:
- 
- Workarounds:
- 
- To Do:
-    1.
- 
- Issues
-    1.
- 
- Design Decisions
-    1.
-
- 
+   Intent: Manipulate a single polar coordinate - Enable one read of a map and return one parameter with both angle and distance without having to reread the whole map, and allow vecotr addition for netForce
+   Interface: angle in degrees, distance in cm (if relevent)
+   Usage: Create angle and Distance
+   Choices:
 */
 
 #ifndef Polar_h
@@ -40,8 +18,8 @@ class Polar
     Polar(float angle, float distance);
     int angle();      // in degrees
     int distance();
+    Polar add(Polar p);
     void debug(); //
-
 
 private:
     float _angle;

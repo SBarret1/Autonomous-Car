@@ -1,6 +1,6 @@
 /*
-  Motor_cpp - Library for H bridge dual Motor
- */
+   Object: Motor
+*/
 
 #include "Arduino.h"
 #include "Motor.h"
@@ -11,17 +11,12 @@
 Motor::Motor(){
 }
 
-void Motor::setPins(int dirAPin, int pwmAPin, int dirBPin, int pwmBPin)
+void Motor::setPins(int dirPin, int pwrPin)
 {
-    _dirAPin = dirAPin;
-    _pwmAPin = pwmAPin;
-    _dirBPin = dirBPin;
-    _pwmBPin = pwmBPin;
-    
-    pinMode(_dirAPin, OUTPUT);   // set dirAPin to output mode
-    pinMode(_pwmAPin, OUTPUT);   // set pwmAPin to output mode
-    pinMode(_dirBPin, OUTPUT);   // set dirBPin to output mode
-    pinMode(_pwmBPin, OUTPUT);   // set pwmBPin to output mode
+    _dirPin = dirPin;
+    _pwmPin = pwmPin;
+    pinMode(_dirPin, OUTPUT);   // set dirAPin to output mode
+    pinMode(_pwmPin, OUTPUT);   // set pwmAPin to output mode
 }
 
 
@@ -31,9 +26,7 @@ void Motor::drive(int speed)
     bool _motorDir = _speed > 0 ? BACKWARD : FORWARD;
 
     digitalWrite(_dirAPin, _motorDir);
-    digitalWrite(_dirBPin, _motorDir);
     analogWrite(_pwmAPin, abs(_speed));
-    analogWrite(_pwmBPin, abs(_speed));
 }
 
 
