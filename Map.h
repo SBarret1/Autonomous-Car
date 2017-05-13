@@ -23,7 +23,7 @@
 class Map
 {
   public:
-    Map(int elements);
+    Map();
     void addReading(Polar reading);
     int numberOfReadings();
     Polar nearest();
@@ -33,7 +33,7 @@ class Map
     void debug(); // in degrees
 
 private:
-    Vector <Polar> _readings;
+    vector <Polar> _readings;
 };
 
 #endif

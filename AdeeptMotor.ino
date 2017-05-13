@@ -1,5 +1,6 @@
+//#include <vector.h>
 
-/***********************************************************
+/*
    Original Version - Website: www.adeept.com, E-mail: support@adeept.com, Author: Tom, Date: 2016/12/26 
 
    Intent: 
