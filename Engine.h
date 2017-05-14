@@ -24,14 +24,12 @@ class Engine
     void setPins(int dirAPin, int pwmAPin, int dirBPin, int pwmBPin);
     void drive(int speed); // in degrees
     void calibrate(int offset); // in degrees
-    int  speed(); // in degrees
+    float  speed();
     void debug(); // in degrees
 
 private:
     Motor _left;
     Motor _right;
-    int _speed;
-    int _direction;
 };
 
 #endif

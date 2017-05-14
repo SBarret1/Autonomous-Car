@@ -30,7 +30,7 @@ class Rangefinder
     void point(int angle); // in degrees
     void calibrate(int offset); // in degrees
     int getDistance();
-    float normalise(float thou);
+    int normalise(float thou);
     void debug(); // in degrees
     Map makeMap();
 
@@ -39,6 +39,7 @@ private:
     Ultrasonic _ultrasonic;
     int _minAngle = 45;
     int _maxAngle = 135;
+    int _slices = 10;
 
     
     /*

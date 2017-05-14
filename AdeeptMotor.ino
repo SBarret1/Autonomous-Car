@@ -1,3 +1,5 @@
+
+
 //#include <vector.h>
 
 /*
@@ -18,7 +20,7 @@
 #include <ServoMotor.h>
 #include <Engine.h>
 #include <Rangefinder.h>
-#include <ArduinoSTL.h>
+//#include <ArduinoSTL.h>
 
 //buzzer
    const int buzzerPin = 8;  
@@ -107,7 +109,7 @@ void loop() {
       int ang = p.angle();
       int spd = 128;                  // set the speed(0-255) of smart car
 
-      if (ang < 90) {ang = steering.max();} else {ang = steering.min();}  
+      if (ang < 90) {ang = steering.maxAngle();} else {ang = steering.minAngle();}  
       if (dist < 20) {ctrlCar(ang, -spd);}
       else if (dist < 50) {ctrlCar(ang, spd);}
       else {ctrlCar(90, spd);}

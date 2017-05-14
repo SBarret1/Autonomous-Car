@@ -45,7 +45,7 @@ void Headlamps::debug()
 // Display its inards
 {
     Serial.print("       ** Headlamps:  ");
-    _ledFL.debug();
+    _main.debug();
     Serial.print("    On: ");
     Serial.println(_isOn);  Serial.print(" ");
 

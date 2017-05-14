@@ -15,6 +15,7 @@
 class Polar
 {
   public:
+    Polar();
     Polar(float angle, float distance);
     int angle();      // in degrees
     int distance();

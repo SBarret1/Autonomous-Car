@@ -22,22 +22,21 @@ void Engine::setPins(int dirAPin, int pwmAPin, int dirBPin, int pwmBPin)
 
 void Engine::drive(int speed)
 {
-    _speed = constrain(speed + _offset, -255, 255);
-    bool _motorDir = _speed > 0 ? BACKWARD : FORWARD;
-    _left.drive(speed)
+    _left.drive(speed);
     _right.drive(speed);
 }
 
 
 void Engine::calibrate(int offset)
 {
-    _offset = map(offset, 0, 1023, -_offsetAccuracy, _offsetAccuracy);
+    _left.calibrate(offset);
+    _right.calibrate(offset);
 }
 
 
-int Engine::speed()
+float Engine::speed()
 {
-    return _speed;
+    return (_left.speed()+_right.speed())/2;
 }
 
 

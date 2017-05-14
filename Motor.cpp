@@ -11,7 +11,7 @@
 Motor::Motor(){
 }
 
-void Motor::setPins(int dirPin, int pwrPin)
+void Motor::setPins(int dirPin, int pwmPin)
 {
     _dirPin = dirPin;
     _pwmPin = pwmPin;
@@ -25,8 +25,8 @@ void Motor::drive(int speed)
     _speed = constrain(speed + _offset, -255, 255);
     bool _motorDir = _speed > 0 ? BACKWARD : FORWARD;
 
-    digitalWrite(_dirAPin, _motorDir);
-    analogWrite(_pwmAPin, abs(_speed));
+    digitalWrite(_dirPin, _motorDir);
+    analogWrite(_pwmPin, abs(_speed));
 }
 
 

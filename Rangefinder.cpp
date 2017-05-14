@@ -25,7 +25,7 @@ void Rangefinder::setPins(int servoPin, int triggerPin, int echoPin)
 
 void Rangefinder::point(int angle)
 {
-    _servoMotor.point(_looking);
+    _servoMotor.point(angle);
 }
 
 
@@ -41,34 +41,35 @@ int Rangefinder::getDistance()
 }
 
 
-float Rangefinder::normalise(float thou)
+int Rangefinder::normalise(float thou)
 {
-    _servoMotor.angle(thou);
+    return (int) _servoMotor.normalise(thou);
 }
 
 
-Map Rangefinder::makeMap(int slices)
+Map Rangefinder::makeMap()
 {
-    Map m;
-    float width = (_maxAngle - _minAngle)/slices;
+    Map map(10);
+    
+    float width = (_maxAngle - _minAngle)/(_slices-1);
     _servoMotor.point(_minAngle);
 
-    for (byte lookingAngle = _minAngle; lookingAngle < _maxAngle; lookingAngle += width) {
+    for (int lookingAngle = _minAngle; lookingAngle < _maxAngle; lookingAngle += width) {
         _servoMotor.point(lookingAngle);
         delay(50);                // wait 50ms between pings (about 20 pingsc). 29ms should be the shortest delay between pings.
-        byte distance = getDistance();// detect the current distance from obstacle with angle of pan tilt stable
-        m.addReading(lookingAngle,distance);
-        }
+        int distance = getDistance();// detect the current distance from obstacle with angle of pan tilt stable
+        map.addReading(lookingAngle,distance);
     } //for
     _servoMotor.point(90); // servo of pan tilt turns to default position
     delay(200);
 
-    return  m;
+    return  map;
 }
 
 
 void Rangefinder::debug()
 {
+    //slices and width, min and max
     _servoMotor.debug();
     _ultrasonic.debug();
     

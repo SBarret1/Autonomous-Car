@@ -5,6 +5,11 @@
 #include "Arduino.h"
 #include "Polar.h"
 
+Polar::Polar(){
+    _angle=0;
+    _distance=0;
+
+}
 
 Polar::Polar(float angle, float distance){
     _angle=angle;
@@ -23,9 +28,9 @@ int Polar::distance()
 }
 
 
-int Polar::add(Polar p)
+Polar Polar::add(Polar p)
 {
-    return 0;
+    return Polar(0,0);
 }
 
 

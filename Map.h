@@ -17,23 +17,25 @@
 #define Map_h
 
 #include "Arduino.h"
-#include <ArduinoSTL.h>
+//#include <ArduinoSTL.h>
 #include "Polar.h"
 
 class Map
 {
   public:
+    Map(int slices);
     Map();
-    void addReading(Polar reading);
+    void addReading(int a, int d);
     int numberOfReadings();
     Polar nearest();
     Polar furthest();
     Polar sum();
-    void reset();
+    //void reset();
     void debug(); // in degrees
 
 private:
-    vector <Polar> _readings;
+    Polar _readings[10];
+    int _number = 0;
 };
 
 #endif

@@ -35,8 +35,8 @@ class ServoMotor
     void calibrate(int offset);
     int normalise(int reading);
     int pointing();
-    int max();
-    int min();
+    int maxAngle();
+    int minAngle();
     void debug();
 
 

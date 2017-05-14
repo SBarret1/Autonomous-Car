@@ -5,25 +5,32 @@
 
 #include "Arduino.h"
 #include "Map.h"
-#include <ArduinoSTL.h>
+//#include <ArduinoSTL.h>
 #include "Polar.h"
 
 
 Map::Map()
 {
+    // no code
+}
 
+Map::Map(int slices)
+{
+   // no code
 }
 
 
-void Map::addReading(Polar reading)
+void Map::addReading(int a, int d)
 {
-    _readings.push_back(reading);
+    Polar p = Polar(a,d);
+    _readings[_number] = p;
+    _number++;
 }
 
 
 int Map::numberOfReadings()
 {
-    return _readings.size();
+    return _number;
 }
 
 
@@ -32,8 +39,8 @@ Polar Map::nearest()
     int barDistance = _readings[0].distance(); // save the minimum measured distance from obstacles
     int barAngle = 0;
     
-    for (int i  = 0; i < _readings.size(); i++) {
-        Polar t = _readings.at(i);
+    for (int i  = 0; i < _number; i++) {
+        Polar t = _readings[i];
         if (t.distance() < barDistance) { // if the current measured distance is smaller than the previous one, save the data of current measured distance
             barAngle = t.angle();       // save the measured angle
             barDistance = t.distance();     // save the measured distance
@@ -50,8 +57,8 @@ Polar Map::furthest()
     int barDistance = _readings[0].distance(); // save the minimum measured distance from obstacles
     int barAngle = 0;
     
-    for (int i  = 0; i < _readings.size(); i++) {
-        Polar t = _readings.at(i);
+    for (int i  = 0; i < _number; i++) {
+        Polar t = _readings[i];
         if (t.distance() > barDistance) { // if the current measured distance is smaller than the previous one, save the data of current measured distance
             barAngle = t.angle();       // save the measured angle
             barDistance = t.distance();     // save the measured distance
@@ -62,17 +69,17 @@ Polar Map::furthest()
     } //for
 }
 
-
+/*
 void Map::reset()
 {
     _readings.clear();
 }
+*/
 
-
-Map::debug()
+void Map::debug()
 {
     Serial.print("  Map Contents: {");
-    for (int i  = 0; i < _readings.size(); i++) {
+    for (int i  = 0; i < _number; i++) {
         Serial.print(" (");
         Serial.print(_readings[i].angle());
         Serial.print(",");
@@ -80,6 +87,6 @@ Map::debug()
         Serial.print(")  ");
     }
     Serial.println("} ");
-    Serial.print(_readings[i].size());
-    Serial.print(" readings ")
+    Serial.print(_number);
+    Serial.print(" readings ");
 }

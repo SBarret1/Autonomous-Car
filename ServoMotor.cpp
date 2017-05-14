@@ -26,17 +26,18 @@ void ServoMotor::point(int angle)
 
 
 void ServoMotor::calibrate(int offset)
+// convert offset 0..1023 into an angle to offset by
 {
     _offset = map(offset, 0, 1023, -_offsetAccuracy, _offsetAccuracy);
 }
 
 
-int ServoMotor::normalise(int reading, int offset)
+int ServoMotor::normalise(int input)
+// normalise 0..1023 desired angle to point, into an angle betweent the min and max
 {
-    int angle = map(reading, 0, 1023, _minAngle, _maxAngle); // steering is between min and max angle
-    return angle;
+    float angle = map(input, 0, 1023, _minAngle, _maxAngle); // steering is between min and max angle
+    return (int) angle;
 }
-
 
 
 int ServoMotor::pointing()
@@ -44,12 +45,12 @@ int ServoMotor::pointing()
     return _angle;
 }
 
-int ServoMotor::min()
+int ServoMotor::minAngle()
 {
     return _minAngle;
 }
 
-int ServoMotor::max()
+int ServoMotor::maxAngle()
 {
     return _maxAngle;
 }
