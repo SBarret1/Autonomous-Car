@@ -1,51 +1,62 @@
 /*
-  Servo_cpp - Library for Servos
+  Object: ServoMotor
 */
 
-#ifndef Servo_h
-#define Servo_h
 
 #include "Arduino.h"
 #include <Servo.h>
+#include "ServoMotor.h"
 
-class ServoMotor
+ServoMotor::ServoMotor(){
+    _angle=90;
+}
+
+void ServoMotor::setPins(int servoPin)
 {
-  public:
-    ServoMotor(int servoPin);
-    void point(int angle = 90);     // in degrees
-    void calibrate(int offset = 0); // in degrees
-
-  private:
-    Servo _servo;
-    int _servoPin;
-    int _angle;          // in degrees
-    int _offset;         // in degrees
-    int _maxAngle = 135; // in degrees
-    int _minAngle = 45;  // in degrees
-};
-
-
-ServoMotor::ServoMotor(int servoPin)
-{
-    _servoPin = servoPin
-    _servo.attach(servoPin);  // attaches the servo on servoDirPin to the servo object
+    _servoPin = servoPin;
+    _servo.attach(_servoPin);  // attaches the servo on servoDirPin to the servo object
 }
 
 
-ServoMotor::point(int angle)
+void ServoMotor::point(int angle)
 {
-    _angle = constrain(_angle + _offset, _minAngle, _maxAngle);
+    _angle = constrain(angle + _offset, _minAngle, _maxAngle);
     _servo.write(_angle);
 }
 
 
-ServoMotor::calibrate(int offset)
+void ServoMotor::calibrate(int offset)
+// convert offset 0..1023 into an angle to offset by
 {
-     _offset = offset
+    _offset = map(offset, 0, 1023, -_offsetAccuracy, _offsetAccuracy);
 }
 
 
-ServoMotor::debug()
+int ServoMotor::normalise(int input)
+// normalise 0..1023 desired angle to point, into an angle betweent the min and max
+{
+    float angle = map(input, 0, 1023, _minAngle, _maxAngle); // steering is between min and max angle
+    return (int) angle;
+}
+
+
+int ServoMotor::pointing()
+{
+    return _angle;
+}
+
+int ServoMotor::minAngle()
+{
+    return _minAngle;
+}
+
+int ServoMotor::maxAngle()
+{
+    return _maxAngle;
+}
+
+
+void ServoMotor::debug()
 {
     Serial.print("  Details of Servo:  Pin ");
     Serial.print(_servoPin);
@@ -59,3 +70,4 @@ ServoMotor::debug()
     Serial.print(_maxAngle);
     Serial.println(" degrees. ");
 }
+

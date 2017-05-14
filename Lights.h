@@ -1,5 +1,32 @@
 /*
   Lights_h - Library for Lights
+ 
+ Purpose: Operate Archibold's RGB LEDs, using the RGB LED library, so they can switch on and offf, and run through difference colour. In Autonomous mode they can indicate his intention/action red for braking,
+ 
+ Contract  ----------------------------------------------
+ 
+ Guarantee:
+ 
+ Preconditions:
+
+ Finite State Machine: First setPins, then cycle thorough colours, then off.
+ 
+ 
+ INTERNAL ----------------------------------------------
+ 
+ Translation Needed: Needs to translate to Archibald's hardware. Two RGB sharing the same three datta pins (for red, green and blue)
+ 
+ Workarounds:
+
+ To Do:
+    1. add something that makse teh light flash until it is switched off
+    2. When flashing, have a background colour (possibly none) that you are alternating with
+ 
+ Issues
+ 
+ Design Decisions 
+   1. Don't write a fictional carlights object, because it needs tob eb specific to the hard ware. Once I write me second lights (for Bartholemew) I can work out if there are really two levels for this
+
 */
 
 #ifndef Lights_h
@@ -18,7 +45,7 @@ class Lights
 
     void indicateLeft(int duration);
     void indicateRight(int duration);
-    void cancelIndicating();
+    // void cancelIndicating();
     void off();
 
     void nextColour();
@@ -27,8 +54,7 @@ class Lights
     // void hazardLights();
     // void reversingLights();
 
-
-
+    
 private:
     LED _ledFL;
     LED _ledFR;
