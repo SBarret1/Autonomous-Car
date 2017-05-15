@@ -57,7 +57,8 @@
 
 //Radio
    RF24 radio(9, 10);                // define the object to control NRF24L01
-   byte addresses[5] = "00007";      // define communication address which should correspond to remote control
+//   byte addresses[5] = "00007";      // define communication address which should correspond to remote control
+   byte addresses[] = "00007";      // define communication address which should correspond to remote control
    int data[9]={512, 512, 0, 0, 1, 1, 512, 512, 512};  // define array used to save the communication data
 
 bool isAutonomous = false;

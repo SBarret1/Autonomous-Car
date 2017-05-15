@@ -18,7 +18,7 @@
 #define Headlamps_h
 
 #include "Arduino.h"
-#include "RGBLed.h"
+#include "RGB.h"
 
 class Headlamps
 {
@@ -31,7 +31,7 @@ public:
     void debug();
     
 private:
-    RGBLed _main;
+    RGB _main;
     bool _isOn;
 };
 

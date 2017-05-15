@@ -5,7 +5,7 @@
 
 #include "Arduino.h"
 #include "Headlamps.h"
-#include "RGBLed.h"
+#include "RGB.h"
 
 Headlamps::Headlamps()
 {
