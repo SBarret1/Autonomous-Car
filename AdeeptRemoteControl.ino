@@ -13,9 +13,10 @@ Original Version - Website: www.adeept.com, E-mail: support@adeept.com, Author: 
 
 #include <SPI.h>
 #include "RF24.h"
+#include <Joystick.h>
 
 RF24 radio(9, 10);            // define the object to control NRF24L01
-byte addresses[5] = "00007";  // define communication address which should correspond to remote control
+byte addresses[] = "00007";  // define communication address which should correspond to remote control
 int data[10];                  // define array used to save the communication data
 
 const int pot6Pin = 5;        // define R6
@@ -31,10 +32,14 @@ const int ultrasonicPin = 0;  // define pin for direction X of joystick U1
 const int MotorPin = 1;       // define pin for direction Y of joystick U1
 const int ServoPin = 2;       // define pin for direction X of joystick U2
 const int sparePin = 3;       // define pin for direction Y of joystick U2
-
+Joystick LJ;
+Joystick RJ;
 
 
 void setup() {
+  LJ.setPins(ultrasonicPin, MotorPin); // X/Y
+  RJ.setPins(ServoPin, sparePin);      // X/Y
+
   
    Serial.begin(9600);
   
@@ -59,16 +64,16 @@ void setup() {
 void loop() {
 
    // put the values of rocker, switch and potentiometer into the array
-   data[0] = 1023-analogRead(ServoPin);      // steering between 0 and 1023
-   data[1] = analogRead(MotorPin);      // speed between 0 and 1023
+   data[0] = 1023-RJ.X();      // steering between 0 and 1023
+   data[1] = LJ.Y();;          // speed between 0 and 1023
    data[2] = 1-digitalRead(APin);         // Switch LED mode as int, switch to 1 is pressed
    data[3] = 1-digitalRead(BPin);         // Set Remote control mode as int, switch to 1 is pressed
    data[4] = 1-digitalRead(CPin);         // Set Autonomous mode as int, switch to 1 is pressed
    data[5] = 1-digitalRead(DPin);         // horn honking as int, switch to 1 is pressed
    data[6] = analogRead(pot5Pin);       // moter speed error correction between 0 and 1023
    data[7] = analogRead(pot6Pin);       // steering/ultrasound error correction between 0 and 1023
-   data[8] = 1023-analogRead(ultrasonicPin); // distance signal between 0 and 1023
-   data[9] = analogRead(sparePin); // distance signal between 0 and 1023
+   data[8] = 1023-LJ.X(); // distance signal between 0 and 1023
+   data[9] = RJ.Y();; // distance signal between 0 and 1023
    
    // send array data. If the sending succeeds, open signal LED
    if (radio.write( data, sizeof(data) ))
@@ -87,6 +92,9 @@ void loop() {
 
 
 void debug() {
+   LJ.debug();
+   RJ.debug();
+   
    Serial.print("   Looking: ");
    Serial.print(data[8]);
    Serial.print(" Speed: ");

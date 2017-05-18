@@ -27,7 +27,6 @@ class RGB
 {
 public:
     RGB();
-    RGB(int rPin, int gPin, int bPin);
     void setPins(int rPin, int gPin, int bPin);
     void setColour(int r, int g, int b);
     void nextColour();
@@ -35,11 +34,7 @@ public:
     void on();
     void off();
     void setFlash(bool flashing);
-    
     void debug();
-    
-    //  void setFlash(bool flashing);
-    //void set(int r, int g, int b, bool temporary, int duration, bool flashing);
     
 private:
     void _ledWrite(int r, int g, int b);
@@ -52,9 +47,7 @@ private:
     int _RGBValue;
     bool _isOn;
     int _off = 255;
-    
-    //  bool _isFlashing;
-    
+    int _on = 0;
 };
 
 #endif

@@ -8,18 +8,9 @@
 
 RGB::RGB()
 {
-}
-
-
-RGB::RGB(int rPin, int gPin, int bPin)
-{
-    _rPin=rPin;
-    _gPin=gPin;
-    _bPin=bPin;
-    
-    _r=HIGH; // HIGH is off
-    _g=HIGH; // HIGH is off
-    _b=HIGH; // HIGH is off
+    _r = _off; // HIGH is off
+    _g = _off; // HIGH is off
+    _b = _off; // HIGH is off
     
     _RGBValue = 0;
     _isOn = false;
@@ -27,13 +18,14 @@ RGB::RGB(int rPin, int gPin, int bPin)
 
 
 void RGB::setPins(int rPin, int gPin, int bPin){
+    _rPin = rPin;
+    _gPin = gPin;
+    _bPin = bPin;
+    
     pinMode(_rPin, OUTPUT);   // set RPin to output mode
     pinMode(_gPin, OUTPUT);   // set GPin to output mode
     pinMode(_bPin, OUTPUT);   // set BPin to output mode
-    this->off();
-    // digitalWrite(_rPin, 255 - _r);
-    // digitalWrite(_gPin, 255 - _g);
-    // digitalWrite(_bPin, 255 - _b);
+    off();
 }
 
 
@@ -82,9 +74,7 @@ void RGB::on()
 //Could be flashing
 {
     _isOn = true;
-    digitalWrite(_rPin, 255 - _r);
-    digitalWrite(_gPin, 255 - _g);
-    digitalWrite(_bPin, 255 - _b);
+    _ledWrite( _r, _g, _b);
 }
 
 
@@ -92,20 +82,17 @@ void RGB::off()
 // Turn the light off
 {
     _isOn = false;
-    //_ledWrite( _off, _off, _off);
-    digitalWrite(_rPin, 255 - _off);
-    digitalWrite(_gPin, 255 - _off);
-    digitalWrite(_bPin, 255 - _off);
+    _ledWrite( _off, _off, _off);
 }
 
-/*
- void _ledWrite(int r, int g, int b) {
+
+ void RGB::_ledWrite(int r, int g, int b) {
  // translate to Hardware LOW = 255
- digitalWrite(_rPin, 255 - _r);
- digitalWrite(_gPin, 255 - _g);
- digitalWrite(_bPin, 255 - _b);
+     digitalWrite(_rPin, 255 - r);
+     digitalWrite(_gPin, 255 - g);
+     digitalWrite(_bPin, 255 - b);
  }
- */
+
 
 void RGB::debug()
 // Display its inards
@@ -118,16 +105,15 @@ void RGB::debug()
     Serial.print("    RGB Value: ");
     Serial.print(_RGBValue);
     Serial.print("    Colours: R ");
-    Serial.print(_r);  Serial.print("  G ");  Serial.print(_g);  Serial.print("  B ");  Serial.print(_b);
+    Serial.print(_r);  Serial.print("  G ");
+    Serial.print(_g);  Serial.print("  B ");
+    Serial.print(_b);
     
     Serial.print("    Lights On: ");
-    Serial.println(_isOn);
+    Serial.print(_isOn);
+    Serial.print("    off is ");
+    Serial.println(_off);
+    Serial.print("    on is ");
+    Serial.println(_on);
 }
 
-
-/*
- void LED::setFlash(bool flashing)
- // Set this light to flash when it is turned on
- {
- _isFlashing = flashing;}
- */
