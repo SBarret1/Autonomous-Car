@@ -12,8 +12,10 @@ Original Version - Website: www.adeept.com, E-mail: support@adeept.com, Author: 
 */
 
 #include <SPI.h>
+#include <String.h>
 #include "RF24.h"
 #include <Joystick.h>
+#include <Button.h>
 
 RF24 radio(9, 10);            // define the object to control NRF24L01
 byte addresses[] = "00007";  // define communication address which should correspond to remote control
@@ -36,6 +38,11 @@ Joystick LJ;
 Joystick RJ;
 
 
+Button buttonA;
+Button buttonB;
+Button buttonC;
+Button buttonD;
+
 void setup() {
   LJ.setPins(ultrasonicPin, MotorPin); // X/Y
   RJ.setPins(ServoPin, sparePin);      // X/Y
@@ -53,10 +60,10 @@ void setup() {
    pinMode(led2Pin, OUTPUT);   // set led2Pin to output mode
    pinMode(led3Pin, OUTPUT);   // set led3Pin to output mode
 
-   pinMode(APin, INPUT_PULLUP);   // set APin to input mode. Normal is 1, pressed is 0
-   pinMode(BPin, INPUT_PULLUP);   // set BPin to input mode. Normal is 1, pressed is 0
-   pinMode(CPin, INPUT_PULLUP);   // set CPin to input mode. Normal is 1, pressed is 0
-   pinMode(DPin, INPUT_PULLUP);   // set DPin to input mode  . Normal is 1, pressed is 0
+   buttonA.setPins(APin, INSTANT, LOW);
+   buttonB.setPins(BPin, INSTANT, LOW);
+   buttonC.setPins(CPin, INSTANT, LOW);
+   buttonD.setPins(DPin, INSTANT, LOW);
 }
 
 
@@ -66,10 +73,10 @@ void loop() {
    // put the values of rocker, switch and potentiometer into the array
    data[0] = 1023-RJ.X();      // steering between 0 and 1023
    data[1] = LJ.Y();;          // speed between 0 and 1023
-   data[2] = 1-digitalRead(APin);         // Switch LED mode as int, switch to 1 is pressed
-   data[3] = 1-digitalRead(BPin);         // Set Remote control mode as int, switch to 1 is pressed
-   data[4] = 1-digitalRead(CPin);         // Set Autonomous mode as int, switch to 1 is pressed
-   data[5] = 1-digitalRead(DPin);         // horn honking as int, switch to 1 is pressed
+   data[2] = buttonA.read();         // Switch LED mode as int, switch to 1 is pressed
+   data[3] = buttonB.read();         // Set Remote control mode as int, switch to 1 is pressed
+   data[4] = buttonC.read();         // Set Autonomous mode as int, switch to 1 is pressed
+   data[5] = buttonD.read();         // horn honking as int, switch to 1 is pressed
    data[6] = analogRead(pot5Pin);       // moter speed error correction between 0 and 1023
    data[7] = analogRead(pot6Pin);       // steering/ultrasound error correction between 0 and 1023
    data[8] = 1023-LJ.X(); // distance signal between 0 and 1023
@@ -105,14 +112,10 @@ void debug() {
    Serial.print(" Spare: ");
    Serial.print(data[9]);
 
-   Serial.print("    A: ");
-   Serial.print(data[2]);
-   Serial.print(" B: ");
-   Serial.print(data[3]);
-   Serial.print(" C: ");
-   Serial.print(data[4]);
-   Serial.print(" D: ");
-   Serial.print(data[5]);
+      buttonA.debug("A");
+      buttonB.debug("B");
+      buttonC.debug("C");
+      buttonD.debug("D");
  
    Serial.print("    pot5Pin: ");
    Serial.print(data[6]);
