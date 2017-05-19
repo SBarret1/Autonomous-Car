@@ -12,19 +12,22 @@
 #define Joystick_h
 
 #include "Arduino.h"
+#include <String.h>
 
 class Joystick
 {
   public:
     Joystick();
-    void setPins(int xPin, int yPin);
+    void setPins(int xPin, int yPin, bool x, bool y);
     int X();
     int Y();
-    void debug();
+    void debug(String n, String x, String y);
     
   private:
     int _xPin;
     int _yPin;
+    bool _reverseX;
+    bool _reverseY;
 };
 
 #endif

@@ -17,8 +17,6 @@ Original Version - Website: www.adeept.com, E-mail: support@adeept.com, Author: 
 #include <Joystick.h>
 #include <Button.h>
 
-RF24 radio(9, 10);            // define the object to control NRF24L01
-byte addresses[] = "00007";  // define communication address which should correspond to remote control
 int data[10];                  // define array used to save the communication data
 
 const int pot6Pin = 5;        // define R6
@@ -44,17 +42,11 @@ Button buttonC;
 Button buttonD;
 
 void setup() {
+   Serial.begin(9600);
+   Serial.println("Handset Setting up: ");
+
    LJ.setPins(ultrasonicPin, MotorPin, true, false); // X/Y
    RJ.setPins(ServoPin, sparePin, true, false);      // X/Y
-
-  
-   Serial.begin(9600);
-  
-   radio.begin();                      // initialize RF24
-   radio.setRetries(0, 15);            // set retries times
-   radio.setPALevel(RF24_PA_LOW);      // set power
-   radio.openWritingPipe(addresses);   // open delivery channel
-   radio.stopListening();              // stop monitoring
 
    pinMode(led1Pin, OUTPUT);   // set led1Pin to output mode
    pinMode(led2Pin, OUTPUT);   // set led2Pin to output mode
@@ -77,13 +69,10 @@ void loop() {
    data[3] = buttonB.read();         // Set Remote control mode as int, switch to 1 is pressed
    data[4] = buttonC.read();         // Set Autonomous mode as int, switch to 1 is pressed
    data[5] = buttonD.read();         // horn honking as int, switch to 1 is pressed
-   data[6] = analogRead(pot5Pin);       // moter speed error correction between 0 and 1023
-   data[7] = analogRead(pot6Pin);       // steering/ultrasound error correction between 0 and 1023
    data[8] = 1023-LJ.X(); // distance signal between 0 and 1023
    data[9] = RJ.Y();; // distance signal between 0 and 1023
    
-   // send array data. If the sending succeeds, open signal LED
-   if (radio.write( data, sizeof(data) ))
+ 
    digitalWrite(led1Pin,HIGH);
 
    // delay for a period of time, then turn off the signal LED for next sending
@@ -111,5 +100,6 @@ void debug() {
    Serial.print(data[6]);
    Serial.print("  pot6Pin: ");
    Serial.println(data[7]);
+   
 }
 
