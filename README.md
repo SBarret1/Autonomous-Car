@@ -13,3 +13,40 @@ Create an autonomous car based on Arduino and the subsumption architecture
 8. Press Button D and the buzzer will beep. As long as you keep pressing, it will keep the beeping. The function is still active under the auto-control mode. 
 9. The car enters the remote control mode automatically after power on. 
 10. You can switch the status of the car by the remote control.
+
+
+
+## Parts
+1x Adeept Uno R3
+1x Adeept Acrylic
+1x Arduino Nano
+1x Adeept Motor Shield V1.0
+1x Adeept Remote Control Shield V1.0
+2x Adeept RGB LED Module
+1x Adeept Passive Buzzer Module
+2x Servo
+1x HC-SR04 Ultrasonic Module
+2x DC Motor
+2x NRF24L01 Module
+12x M2 Nut
+18x M3 Nut
+2x M4 Nut
+12x M2*10 Screw
+4x M3*4 Screw
+32x M3*8 Screw
+6x M3*12 Screw
+6x M3*30 Screw
+2x M4*4 Screw
+4x M3*10 Countersunk Head Screw
+6x M1.4*6 Self-tapping Screw
+4x M3*6 Copper Standoff
+6x M3*12 Copper Standoff
+8x M3*30 Copper Standoff
+4x F687ZZ Bearing
+4x F624ZZ Bearing
+10x M4 Spring Washer
+1x Cross Screwdriver
+1x Slotted Screwdriver
+1x Cross Socket Wrench
+
+18650 batteries 
